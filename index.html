@@ -33,6 +33,7 @@
     --line: #4a2f3d; --field: #2f1f28; --on-pink: #fff6fb; color-scheme: dark;
   }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 16px; line-height: 1.55; }
   body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--pink); }
 
@@ -87,24 +88,20 @@
   .check { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; font-weight: 500; font-size: 14px; }
   .check input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--pink); }
 
-  button.primary {
+  .primary {
     font: inherit; font-weight: 700; font-size: 17px; color: var(--on-pink); background: var(--pink);
     border: 0; border-radius: 999px; padding: 16px 28px; cursor: pointer; transition: transform .12s, background .12s;
+    display: inline-block; text-decoration: none; text-align: center;
   }
-  button.primary:hover { background: #e23b95; }
-  button.primary:active { transform: scale(0.985); }
-  button.primary:focus-visible { outline: 3px solid var(--pink-light); outline-offset: 2px; }
+  .primary:hover { background: #e23b95; }
+  .primary:active { transform: scale(0.985); }
+  .primary:focus-visible { outline: 3px solid var(--pink-light); outline-offset: 2px; }
   button.primary[disabled] { opacity: 0.6; cursor: progress; }
-  .ghost { font: inherit; font-weight: 600; font-size: 14px; color: var(--pink); background: transparent; border: 1.5px solid var(--pink); border-radius: 999px; padding: 10px 18px; cursor: pointer; }
-  .ghost:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
   .msg { font-size: 14px; color: var(--err); min-height: 1.2em; margin: 0; }
 
   .done { display: grid; gap: 14px; text-align: left; }
   .done .big { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: var(--pink); margin: 0; }
   .done p { margin: 0; }
-  .summary { background: var(--field); border: 1.5px solid var(--line); border-radius: 16px; padding: 14px 16px; white-space: pre-wrap; font-size: 14px; line-height: 1.6; }
-  .done-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-  .note { font-size: 13px; color: var(--muted); }
 
   .side { display: grid; gap: 20px; }
   .guest { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; }
@@ -183,13 +180,8 @@
 
     <div class="done" id="done" hidden>
       <p class="big">Inscrição recebida!</p>
-      <p id="done-text">Agora é só aguardar: vamos te chamar no WhatsApp pra combinar o pagamento e passar o local.</p>
-      <div class="summary" id="summary"></div>
-      <div class="done-actions">
-        <button class="ghost" type="button" id="copy">Copiar meus dados</button>
-        <span class="note" id="copy-note">Se quiser, cole no WhatsApp da organização pra agilizar.</span>
-      </div>
-      <div><button class="ghost" type="button" id="again">Inscrever outra pessoa</button></div>
+      <p id="done-text">Falta só o pagamento: os R$ 60 no Pix confirmam a sua vaga.</p>
+      <div><a class="primary" id="pix" href="#" target="_blank" rel="noopener" hidden>Pagar R$ 60 no Pix</a></div>
     </div>
   </section>
 
@@ -226,20 +218,14 @@
   var btn = document.getElementById('btn');
   var msg = document.getElementById('msg');
   var done = document.getElementById('done');
-  var summary = document.getElementById('summary');
-  var db = null, lastText = '';
+  var pix = document.getElementById('pix');
+  var db = null;
+  // Link de pagamento do Pix. Enquanto estiver vazio, a página só mostra a confirmação.
+  var PIX_URL = '';
+  if (PIX_URL) { pix.href = PIX_URL; pix.hidden = false; }
 
   function val(id) { return (document.getElementById(id).value || '').trim(); }
   function grupo() { var r = form.querySelector('input[name="grupo"]:checked'); return r ? r.value : ''; }
-
-  function buildText(d) {
-    return 'Inscrição Picnic Pink Pace (29/11, 16h)\n' +
-      'Nome: ' + d.nome + '\n' +
-      'WhatsApp: ' + d.whats + '\n' +
-      (d.grupo ? 'Participação: ' + d.grupo + '\n' : '') +
-      'Restrição alimentar: ' + (d.restricao || 'nenhuma') + '\n' +
-      (d.pergunta ? 'Pergunta pras convidadas: ' + d.pergunta + '\n' : '');
-  }
 
   function validate() {
     var bad = null;
@@ -270,32 +256,13 @@
     if (!validate()) return;
     var d = { nome: val('nome'), whats: val('whats'), grupo: grupo(), restricao: val('restricao'), pergunta: val('pergunta') };
     btn.disabled = true; btn.textContent = 'Enviando...';
-    var how = await save(d);
-    lastText = buildText(d);
-    summary.textContent = lastText;
-    document.getElementById('done-text').textContent = how === 'saved'
-      ? 'Agora é só aguardar: vamos te chamar no WhatsApp pra combinar o pagamento e passar o local.'
-      : 'Copie seus dados abaixo e mande pro WhatsApp da organização pra confirmar. Assim que recebermos, combinamos o pagamento e o local.';
+    await save(d);
     form.hidden = true; done.hidden = false;
     btn.disabled = false; btn.textContent = 'Quero participar';
+    // Fora do Claude (GitHub Pages, por exemplo) a página vai direto pro Pix.
+    // Dentro do Claude a navegação é bloqueada, então fica o botão.
+    if (PIX_URL && !window.claude) { window.location.href = PIX_URL; return; }
     done.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
-  document.getElementById('copy').addEventListener('click', function () {
-    var note = document.getElementById('copy-note');
-    function fallback() {
-      var r = document.createRange(); r.selectNodeContents(summary);
-      var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
-      note.textContent = 'Texto selecionado. Use copiar no seu aparelho.';
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(lastText).then(function () { note.textContent = 'Copiado! Agora é só colar no WhatsApp.'; }, fallback);
-    } else fallback();
-  });
-
-  document.getElementById('again').addEventListener('click', function () {
-    form.reset(); done.hidden = true; form.hidden = false;
-    document.getElementById('nome').focus();
   });
 
   if (window.claude && window.claude.use) {

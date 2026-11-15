@@ -1,6 +1,6 @@
-# Piquenique Pink Pace
+# Picnic Pink Pace
 
-Página de inscrição do piquenique da Pink Pace (29/11, 16h).
+Página de inscrição do picnic da Pink Pace (29/11, 16h).
 
 Site estático: basta abrir `index.html` ou publicar a pasta no GitHub Pages / Netlify / Vercel.
 

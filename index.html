@@ -221,7 +221,7 @@
   var pix = document.getElementById('pix');
   var db = null;
   // Link de pagamento do Pix. Enquanto estiver vazio, a página só mostra a confirmação.
-  var PIX_URL = '';
+  var PIX_URL = 'https://mpago.la/2HKUSTB';
   if (PIX_URL) { pix.href = PIX_URL; pix.hidden = false; }
 
   function val(id) { return (document.getElementById(id).value || '').trim(); }

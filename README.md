@@ -6,3 +6,5 @@ Site no ar: https://pinkpace.vercel.app (publicado pelo Vercel a cada envio na b
 
 - `index.html`: página completa (HTML, CSS e JS embutidos)
 - `fotos/`: foto da convidada
+- `inscricoes/`: lista de inscritas, com login (pinkpace.vercel.app/inscricoes)
+- `supabase/`: definição do banco

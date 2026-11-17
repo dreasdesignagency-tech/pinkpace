@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Inscrições do Picnic</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap">
+<style>
+  /* Layout: faixa rosa com o total, abaixo login ou a lista em cartões, uma coluna no celular. */
+  :root {
+    --pink: #f347a3;
+    --pink-light: #ff8fce;
+    --bg: #f4f0ef;
+    --card: #ffffff;
+    --fg: #2b1a24;
+    --muted: #7a5f6e;
+    --line: #ecd6e2;
+    --field: #faf6f8;
+    --on-pink: #fff6fb;
+    --err: #c8323c;
+    --font: "Poppins", "Segoe UI", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #1c1218; --card: #26191f; --fg: #f8eef3; --muted: #c9a9b9; --line: #4a2f3d; --field: #2f1f28; --err: #ff7a83; color-scheme: dark; }
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--font); font-size: 15px; line-height: 1.5; }
+  .band { background: var(--pink); color: var(--on-pink); }
+  .inner {
+    max-width: 960px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .band .inner { padding-block: 28px 32px; display: flex; flex-wrap: wrap; gap: 20px; align-items: end; justify-content: space-between; }
+  .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 6px; opacity: 0.9; }
+  h1 { margin: 0; font-size: clamp(26px, 5vw, 38px); line-height: 1.05; font-weight: 800; letter-spacing: -0.02em; }
+  .meta { margin: 6px 0 0; font-size: 14px; opacity: 0.92; }
+  .total { text-align: right; }
+  .total .n { font-size: clamp(44px, 9vw, 64px); font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+  .total .l { font-size: 13px; font-weight: 600; opacity: 0.9; }
+
+  main.inner { padding-block: 22px 56px; display: grid; gap: 16px; }
+  .panel { background: var(--card); border-radius: 22px; padding: 26px 22px; border: 1.5px solid var(--line); max-width: 440px; width: 100%; justify-self: center; }
+  .panel h2 { margin: 0 0 6px; font-size: 22px; }
+  .panel p { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
+  form { display: grid; gap: 14px; }
+  label { display: grid; gap: 6px; font-weight: 600; font-size: 14px; }
+  input { font: inherit; font-size: 16px; color: var(--fg); background: var(--field); border: 1.5px solid var(--line); border-radius: 14px; padding: 12px 14px; width: 100%; min-width: 0; }
+  input:focus { outline: 2px solid var(--pink); outline-offset: 1px; border-color: var(--pink); }
+  .msg { color: var(--err); font-size: 14px; min-height: 1.2em; margin: 0; }
+
+  .tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .tools input { flex: 1 1 220px; border-radius: 999px; background: var(--card); padding: 10px 16px; font-size: 15px; }
+  .btn { font: inherit; font-weight: 600; font-size: 14px; border-radius: 999px; padding: 10px 18px; cursor: pointer; border: 1.5px solid var(--pink); background: transparent; color: var(--pink); }
+  .btn.solid { background: var(--pink); color: var(--on-pink); }
+  .btn.big { font-size: 16px; padding: 14px 22px; }
+  .btn:focus-visible { outline: 2px solid var(--pink); outline-offset: 2px; }
+  .btn[disabled] { opacity: 0.55; cursor: progress; }
+  .status { font-size: 13px; color: var(--muted); margin: 0; }
+  .who { font-size: 13px; color: var(--muted); margin-left: auto; }
+
+  .notice { background: var(--card); border-radius: 18px; padding: 22px; border: 1.5px solid var(--line); }
+  .notice h2 { margin: 0 0 6px; font-size: 18px; }
+  .notice p { margin: 0; color: var(--muted); }
+  .notice.err h2 { color: var(--err); }
+
+  .list { display: grid; gap: 12px; }
+  .row { background: var(--card); border-radius: 18px; padding: 16px 18px; display: grid; gap: 8px; border: 1.5px solid var(--line); }
+  .row-top { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; justify-content: space-between; }
+  .name { font-weight: 700; font-size: 17px; }
+  .when { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .chip { font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--field); border: 1px solid var(--line); }
+  .chip.whats { color: var(--pink); background: transparent; border-color: var(--pink); text-decoration: none; }
+  .chip.alert { background: var(--pink-light); border-color: var(--pink-light); color: #4a1033; }
+  .field { font-size: 14px; }
+  .field b { font-weight: 600; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; display: block; }
+  .del { margin-left: auto; font: inherit; font-size: 12px; font-weight: 600; color: var(--muted); background: none; border: 0; cursor: pointer; text-decoration: underline; padding: 4px; }
+  .del.confirm { color: var(--err); }
+</style>
+</head>
+<body>
+<header class="band">
+  <div class="inner">
+    <div>
+      <p class="eyebrow">Picnic Pink Pace · 06/12, 16h</p>
+      <h1>Inscrições recebidas</h1>
+      <p class="meta" id="meta">Área restrita da organização.</p>
+    </div>
+    <div class="total" id="total-box" hidden><div class="n" id="total">–</div><div class="l">de 50 vagas</div></div>
+  </div>
+</header>
+
+<main class="inner">
+  <section class="panel" id="login">
+    <h2>Entrar</h2>
+    <p>Use o e-mail e a senha da sua conta autorizada.</p>
+    <form id="f-login" novalidate>
+      <label>E-mail
+        <input id="email" type="email" autocomplete="username" required>
+      </label>
+      <label>Senha
+        <input id="senha" type="password" autocomplete="current-password" required>
+      </label>
+      <p class="msg" id="login-msg" role="alert"></p>
+      <button class="btn solid big" type="submit" id="btn-login">Entrar</button>
+    </form>
+  </section>
+
+  <section id="area" hidden>
+    <div class="tools">
+      <input id="busca" type="search" placeholder="Buscar por nome ou WhatsApp" aria-label="Buscar inscrita">
+      <button class="btn solid" id="atualizar" type="button">Atualizar</button>
+      <button class="btn" id="baixar" type="button" hidden>Baixar planilha</button>
+      <button class="btn" id="sair" type="button">Sair</button>
+    </div>
+    <p class="status" id="status" style="margin-top:12px"></p>
+    <section class="notice" id="aviso" hidden style="margin-top:12px">
+      <h2 id="aviso-t"></h2>
+      <p id="aviso-p"></p>
+    </section>
+    <section class="list" id="lista" aria-live="polite" style="margin-top:12px"></section>
+  </section>
+</main>
+
+<script>
+(function () {
+  var URL_ = 'https://ovlwxtmyfkylkpbajlln.supabase.co';
+  var KEY = 'sb_publishable_1y0ikHnF_QMuyDxKDmMfmQ_layrCNa9';
+  var STORE = 'pinkpace-inscricoes-sessao';
+  var sess = null, rows = [];
+  var el = function (id) { return document.getElementById(id); };
+
+  function guardar(s) { sess = s; try { s ? sessionStorage.setItem(STORE, JSON.stringify(s)) : sessionStorage.removeItem(STORE); } catch (e) {} }
+  function lerSessao() { try { return JSON.parse(sessionStorage.getItem(STORE) || 'null'); } catch (e) { return null; } }
+
+  async function auth(path, body) {
+    var r = await fetch(URL_ + '/auth/v1/' + path, { method: 'POST', headers: { apikey: KEY, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    var j = await r.json().catch(function () { return {}; });
+    if (!r.ok) { var e = new Error(j.error_description || j.msg || j.message || 'erro'); e.code = j.error_code || j.error || r.status; throw e; }
+    return j;
+  }
+
+  function comPrazo(j) { return { access_token: j.access_token, refresh_token: j.refresh_token, expira: Date.now() + (j.expires_in || 3600) * 1000, email: j.user && j.user.email }; }
+
+  async function token() {
+    if (!sess) throw Object.assign(new Error('sem sessão'), { code: 'sem_sessao' });
+    if (Date.now() > sess.expira - 60000) {
+      try { guardar(Object.assign(comPrazo(await auth('token?grant_type=refresh_token', { refresh_token: sess.refresh_token })), { email: sess.email })); }
+      catch (e) { guardar(null); throw Object.assign(new Error('sessão expirada'), { code: 'sem_sessao' }); }
+    }
+    return sess.access_token;
+  }
+
+  async function api(method, path, body) {
+    var t = await token();
+    var r = await fetch(URL_ + path, { method: method, headers: { apikey: KEY, Authorization: 'Bearer ' + t, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+    if (r.status === 401) { guardar(null); throw Object.assign(new Error('sessão expirada'), { code: 'sem_sessao' }); }
+    if (!r.ok) throw Object.assign(new Error(await r.text()), { code: r.status });
+    var txt = await r.text();
+    return txt ? JSON.parse(txt) : null;
+  }
+
+  function aviso(t, p, erro) { el('aviso').hidden = false; el('aviso').classList.toggle('err', !!erro); el('aviso-t').textContent = t; el('aviso-p').textContent = p; }
+  function soNumeros(s) { return String(s || '').replace(/\D/g, ''); }
+  function quando(s) { var d = new Date(s); return isNaN(d) ? '' : d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); }
+
+  function mostrarLogin(msg) {
+    el('login').hidden = false; el('area').hidden = true; el('total-box').hidden = true;
+    el('meta').textContent = 'Área restrita da organização.';
+    el('login-msg').textContent = msg || '';
+  }
+
+  function render() {
+    var q = el('busca').value.trim().toLowerCase(), qn = soNumeros(q);
+    var lista = el('lista'); lista.textContent = '';
+    el('total').textContent = String(rows.length);
+    el('meta').textContent = rows.length
+      ? rows.filter(function (r) { return r.restricao; }).length + ' com restrição alimentar · ' + rows.filter(function (r) { return r.pergunta; }).length + ' com pergunta pra Carolina'
+      : 'Nenhuma inscrição ainda.';
+    var vis = rows.filter(function (r) { return !q || String(r.nome || '').toLowerCase().indexOf(q) >= 0 || (qn && soNumeros(r.whats).indexOf(qn) >= 0); });
+    if (rows.length && q && !vis.length) { var p = document.createElement('p'); p.className = 'status'; p.textContent = 'Ninguém encontrado com essa busca.'; lista.appendChild(p); }
+    vis.forEach(function (r) {
+      var card = document.createElement('article'); card.className = 'row';
+      var top = document.createElement('div'); top.className = 'row-top';
+      var n = document.createElement('span'); n.className = 'name'; n.textContent = r.nome || 'Sem nome';
+      var w = document.createElement('span'); w.className = 'when'; w.textContent = quando(r.criado_em);
+      top.append(n, w);
+      var chips = document.createElement('div'); chips.className = 'chips';
+      var num = soNumeros(r.whats);
+      if (num) { var a = document.createElement('a'); a.className = 'chip whats'; a.href = 'https://wa.me/' + (num.length <= 11 ? '55' + num : num); a.target = '_blank'; a.rel = 'noopener'; a.textContent = r.whats; chips.appendChild(a); }
+      if (r.grupo) { var g = document.createElement('span'); g.className = 'chip'; g.textContent = r.grupo; chips.appendChild(g); }
+      if (r.restricao) { var c = document.createElement('span'); c.className = 'chip alert'; c.textContent = 'Restrição alimentar'; chips.appendChild(c); }
+      var del = document.createElement('button'); del.type = 'button'; del.className = 'del'; del.textContent = 'Remover';
+      del.addEventListener('click', function () { remover(r, del); });
+      chips.appendChild(del);
+      card.append(top, chips);
+      [['Restrição alimentar', r.restricao], ['Pergunta pra Carolina', r.pergunta]].forEach(function (f) {
+        if (!f[1]) return;
+        var d = document.createElement('div'); d.className = 'field';
+        var b = document.createElement('b'); b.textContent = f[0];
+        var t = document.createElement('span'); t.textContent = f[1];
+        d.append(b, t); card.appendChild(d);
+      });
+      lista.appendChild(card);
+    });
+    el('baixar').hidden = !rows.length;
+  }
+
+  async function remover(r, btn) {
+    if (!btn.classList.contains('confirm')) {
+      btn.classList.add('confirm'); btn.textContent = 'Toque de novo pra remover';
+      setTimeout(function () { btn.classList.remove('confirm'); btn.textContent = 'Remover'; }, 4000);
+      return;
+    }
+    btn.disabled = true; btn.textContent = 'Removendo…';
+    try {
+      await api('DELETE', '/rest/v1/inscricoes_picnic?id=eq.' + encodeURIComponent(r.id));
+      rows = rows.filter(function (x) { return x.id !== r.id; });
+      el('status').textContent = (r.nome || 'Inscrição') + ' foi removida. A vaga voltou a ficar disponível.';
+      render();
+    } catch (e) {
+      if (e.code === 'sem_sessao') return mostrarLogin('Sua sessão expirou. Entre de novo.');
+      btn.disabled = false; btn.textContent = 'Remover';
+      el('status').textContent = 'Não deu pra remover agora. Tente de novo.';
+    }
+  }
+
+  async function carregar() {
+    var btn = el('atualizar'); btn.disabled = true; btn.textContent = 'Atualizando…';
+    el('aviso').hidden = true;
+    try {
+      var admin = await api('POST', '/rest/v1/rpc/is_pinkpace_admin', {});
+      el('login').hidden = true; el('area').hidden = false;
+      if (!admin) {
+        el('total-box').hidden = true; rows = []; el('lista').textContent = ''; el('baixar').hidden = true;
+        el('meta').textContent = 'Conta sem acesso.';
+        aviso('Esta conta não tem acesso à lista', 'Você entrou como ' + (sess.email || 'esta conta') + ', mas ela não está autorizada a ver as inscrições do Picnic.', true);
+        return;
+      }
+      rows = await api('GET', '/rest/v1/inscricoes_picnic?select=id,criado_em,nome,whats,grupo,restricao,pergunta&order=criado_em.desc&limit=1000') || [];
+      el('total-box').hidden = false;
+      el('status').textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' · ' + (sess.email || '');
+      if (!rows.length) aviso('Nenhuma inscrição ainda', 'Quando alguém se inscrever pelo site e clicar em Quero participar, o nome aparece aqui.');
+      render();
+    } catch (e) {
+      if (e.code === 'sem_sessao') return mostrarLogin('Sua sessão expirou. Entre de novo.');
+      aviso('Não deu pra carregar', 'Confira sua internet e toque em Atualizar.', true);
+    } finally { btn.disabled = false; btn.textContent = 'Atualizar'; }
+  }
+
+  el('f-login').addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    var email = el('email').value.trim(), senha = el('senha').value;
+    if (!email || !senha) { el('login-msg').textContent = 'Preencha e-mail e senha.'; return; }
+    var b = el('btn-login'); b.disabled = true; b.textContent = 'Entrando…'; el('login-msg').textContent = '';
+    try {
+      guardar(comPrazo(await auth('token?grant_type=password', { email: email, password: senha })));
+      el('senha').value = '';
+      await carregar();
+    } catch (e) {
+      el('login-msg').textContent = String(e.code) === 'invalid_credentials' || String(e.code) === 'invalid_grant' || e.code === 400
+        ? 'E-mail ou senha incorretos.' : 'Não deu pra entrar agora. Confira sua internet e tente de novo.';
+    } finally { b.disabled = false; b.textContent = 'Entrar'; }
+  });
+
+  el('busca').addEventListener('input', render);
+  el('atualizar').addEventListener('click', carregar);
+  el('sair').addEventListener('click', async function () {
+    try { if (sess) await fetch(URL_ + '/auth/v1/logout', { method: 'POST', headers: { apikey: KEY, Authorization: 'Bearer ' + sess.access_token } }); } catch (e) {}
+    guardar(null); rows = []; el('lista').textContent = ''; mostrarLogin('');
+  });
+  el('baixar').addEventListener('click', function () {
+    var cols = ['criado_em', 'nome', 'whats', 'grupo', 'restricao', 'pergunta'];
+    var head = ['Data', 'Nome', 'WhatsApp', 'Participação', 'Restrição alimentar', 'Pergunta pra Carolina'];
+    var esc = function (v) { v = v == null ? '' : String(v); return /[";\n,]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    var csv = '﻿' + [head.join(';')].concat(rows.map(function (r) { return cols.map(function (c) { return esc(c === 'criado_em' ? quando(r[c]) : r[c]); }).join(';'); })).join('\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = 'inscricoes-picnic-pinkpace.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+
+  sess = lerSessao();
+  if (sess) carregar(); else mostrarLogin('');
+})();
+</script>
+</body>
+</html>

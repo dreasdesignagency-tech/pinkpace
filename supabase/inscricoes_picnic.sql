@@ -63,3 +63,38 @@ $$;
 
 revoke all on function public.vagas_picnic() from public;
 grant execute on function public.vagas_picnic() to anon, authenticated;
+
+-- Página /inscricoes: só contas listadas em pinkpace_admins leem e apagam inscrições.
+create table if not exists public.pinkpace_admins (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  criado_em timestamptz not null default now()
+);
+alter table public.pinkpace_admins enable row level security;
+revoke all on public.pinkpace_admins from anon, authenticated;
+
+create or replace function public.is_pinkpace_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (select 1 from public.pinkpace_admins where user_id = auth.uid());
+$$;
+revoke all on function public.is_pinkpace_admin() from public, anon;
+grant execute on function public.is_pinkpace_admin() to authenticated;
+
+grant select, delete on public.inscricoes_picnic to authenticated;
+
+drop policy if exists "admins da pink pace leem" on public.inscricoes_picnic;
+create policy "admins da pink pace leem"
+  on public.inscricoes_picnic for select to authenticated
+  using (public.is_pinkpace_admin());
+
+drop policy if exists "admins da pink pace apagam" on public.inscricoes_picnic;
+create policy "admins da pink pace apagam"
+  on public.inscricoes_picnic for delete to authenticated
+  using (public.is_pinkpace_admin());
+
+-- Pra dar acesso a alguém que já tem login no projeto:
+-- insert into public.pinkpace_admins (user_id) select id from auth.users where email = 'email@exemplo.com';

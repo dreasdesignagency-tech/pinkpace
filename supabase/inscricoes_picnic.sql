@@ -20,7 +20,7 @@ create policy "visitantes podem se inscrever"
   on public.inscricoes_picnic for insert to anon
   with check (true);
 
--- Limite de 50 inscrições.
+-- Limite de 50 inscrições e prazo até o fim do dia 29/11 (horário de Brasília).
 -- O trava garante que duas inscrições ao mesmo tempo não passem do limite.
 create or replace function public.limite_inscricoes_picnic()
 returns trigger
@@ -30,6 +30,9 @@ set search_path = public
 as $$
 begin
   perform pg_advisory_xact_lock(hashtext('inscricoes_picnic'));
+  if now() >= timestamptz '2026-11-30 00:00:00-03' then
+    raise exception 'inscricoes_prazo_encerrado' using errcode = 'P0001';
+  end if;
   if (select count(*) from public.inscricoes_picnic) >= 50 then
     raise exception 'inscricoes_esgotadas' using errcode = 'P0001';
   end if;
@@ -53,7 +56,9 @@ stable
 security definer
 set search_path = public
 as $$
-  select greatest(50 - count(*), 0)::int from public.inscricoes_picnic;
+  select case when now() >= timestamptz '2026-11-30 00:00:00-03' then 0
+              else greatest(50 - count(*), 0)::int end
+  from public.inscricoes_picnic;
 $$;
 
 revoke all on function public.vagas_picnic() from public;

@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Picnic Pink Pace</title>
-<meta name="description" content="Domingo, 6 de dezembro, às 16h. Picnic com comida, kit exclusivo e roda de conversa com a nutricionista Carolina Padilha. 50 vagas, inscrições até 29/11.">
+<meta name="description" content="Domingo, 6 de dezembro, às 16h. Picnic com comida, kit exclusivo e roda de conversa com a nutricionista Carolina Padilha e a psicóloga Luiza Rafaela. 50 vagas, inscrições até 29/11.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Pink Pace">
 <meta property="og:locale" content="pt_BR">
 <meta property="og:url" content="https://pinkpace.vercel.app/">
 <meta property="og:title" content="Picnic Pink Pace · 06/12, 16h">
-<meta property="og:description" content="Comida, kit exclusivo e roda de conversa com a nutricionista Carolina Padilha. 50 vagas, inscrições até 29/11.">
+<meta property="og:description" content="Comida, kit exclusivo e roda de conversa com a nutricionista Carolina Padilha e a psicóloga Luiza Rafaela. 50 vagas, inscrições até 29/11.">
 <meta property="og:image" content="https://pinkpace.vercel.app/og.jpg">
 <meta property="og:image:secure_url" content="https://pinkpace.vercel.app/og.jpg">
 <meta property="og:image:type" content="image/jpeg">
@@ -158,8 +158,8 @@
         <div><div class="k">Vagas</div><div class="v">50 vagas<small>inscrições até 29 de novembro</small></div></div>
       </div>
       <div class="fact">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg>
-        <div><div class="k">Convidada</div><div class="v">Carolina Padilha<small>nutricionista</small></div></div>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9" r="3"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M14 20a5 5 0 0 1 7.5-4.3"/></svg>
+        <div><div class="k">Convidadas</div><div class="v">Carolina Padilha e Luiza Rafaela<small>nutricionista e psicóloga</small></div></div>
       </div>
     </div>
   </div>
@@ -188,7 +188,7 @@
       <label>Restrição alimentar ou alergia <span class="opt">(importante pra montarmos a comida)</span>
         <textarea id="restricao" name="restricao" maxlength="1000" placeholder="Ex.: vegetariana, intolerância à lactose, alergia a amendoim. Se não tiver, pode deixar em branco."></textarea>
       </label>
-      <label>Tem alguma pergunta pra Carolina? <span class="opt">(opcional)</span>
+      <label>Tem alguma pergunta pras convidadas? <span class="opt">(opcional)</span>
         <textarea id="pergunta" name="pergunta" maxlength="1000" placeholder="Nutrição, saúde da mulher, corrida... manda aqui que a gente leva pra roda de conversa."></textarea>
       </label>
       <label class="check">
@@ -221,6 +221,10 @@
           <img class="foto" src="fotos/carolina.jpg" alt="Carolina Padilha" width="64" height="64">
           <div><div class="n">Carolina Padilha</div><div class="r">Nutricionista</div></div>
         </div>
+        <div class="guest">
+          <img class="foto" src="fotos/luiza.jpg" alt="Luiza Rafaela" width="64" height="64">
+          <div><div class="n">Luiza Rafaela</div><div class="r">Psicóloga</div></div>
+        </div>
       </div>
     </section>
     <section class="card">
@@ -228,7 +232,7 @@
       <ul class="includes">
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Comida do picnic</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Kit exclusivo Pink Pace</span></li>
-        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Roda de conversa com a nutricionista Carolina Padilha</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Roda de conversa com a nutricionista Carolina Padilha e a psicóloga Luiza Rafaela</span></li>
         <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Uma tarde de domingo sem pressa, com as meninas do grupo</span></li>
       </ul>
     </section>
@@ -245,7 +249,7 @@
   var pix = document.getElementById('pix');
   var db = null;
   // Link de pagamento do Pix. Enquanto estiver vazio, a página só mostra a confirmação.
-  var PIX_URL = 'https://mpago.la/2HKUSTB';
+  var PIX_URL = 'https://mpago.li/25sL1jN';
   if (PIX_URL) { pix.href = PIX_URL; pix.hidden = false; }
 
   function val(id) { return (document.getElementById(id).value || '').trim(); }

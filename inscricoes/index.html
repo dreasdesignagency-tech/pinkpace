@@ -178,7 +178,7 @@
     var lista = el('lista'); lista.textContent = '';
     el('total').textContent = String(rows.length);
     el('meta').textContent = rows.length
-      ? rows.filter(function (r) { return r.restricao; }).length + ' com restrição alimentar · ' + rows.filter(function (r) { return r.pergunta; }).length + ' com pergunta pra Carolina'
+      ? rows.filter(function (r) { return r.restricao; }).length + ' com restrição alimentar · ' + rows.filter(function (r) { return r.pergunta; }).length + ' com pergunta pras convidadas'
       : 'Nenhuma inscrição ainda.';
     var vis = rows.filter(function (r) { return !q || String(r.nome || '').toLowerCase().indexOf(q) >= 0 || (qn && soNumeros(r.whats).indexOf(qn) >= 0); });
     if (rows.length && q && !vis.length) { var p = document.createElement('p'); p.className = 'status'; p.textContent = 'Ninguém encontrado com essa busca.'; lista.appendChild(p); }
@@ -197,7 +197,7 @@
       del.addEventListener('click', function () { remover(r, del); });
       chips.appendChild(del);
       card.append(top, chips);
-      [['Restrição alimentar', r.restricao], ['Pergunta pra Carolina', r.pergunta]].forEach(function (f) {
+      [['Restrição alimentar', r.restricao], ['Pergunta pras convidadas', r.pergunta]].forEach(function (f) {
         if (!f[1]) return;
         var d = document.createElement('div'); d.className = 'field';
         var b = document.createElement('b'); b.textContent = f[0];
@@ -274,7 +274,7 @@
   });
   el('baixar').addEventListener('click', function () {
     var cols = ['criado_em', 'nome', 'whats', 'grupo', 'restricao', 'pergunta'];
-    var head = ['Data', 'Nome', 'WhatsApp', 'Participação', 'Restrição alimentar', 'Pergunta pra Carolina'];
+    var head = ['Data', 'Nome', 'WhatsApp', 'Participação', 'Restrição alimentar', 'Pergunta pras convidadas'];
     var esc = function (v) { v = v == null ? '' : String(v); return /[";\n,]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
     var csv = '﻿' + [head.join(';')].concat(rows.map(function (r) { return cols.map(function (c) { return esc(c === 'criado_em' ? quando(r[c]) : r[c]); }).join(';'); })).join('\n');
     var a = document.createElement('a');
